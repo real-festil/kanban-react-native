@@ -9,8 +9,11 @@ class Caption extends Component {
   };
 
   onInputBlur = () => {
+    const { name } = this.state;
+    const { editName, value } = this.props;
+
     this.setState({ isInput: false });
-    this.props.editName(this.state.name);
+    editName(name.trim() ? name : value);
   };
 
   render() {
