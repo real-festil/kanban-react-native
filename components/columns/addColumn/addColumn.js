@@ -25,6 +25,7 @@ class AddColumn extends Component {
       <Modal
         animationType="slide"
         transparent={false}
+        presentationStyle="pageSheet"
         visible={visible}
         modalOpen={() => {
           this.setState((modalVisible: true));

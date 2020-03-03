@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import columnsList from "../../reducers/columnsList";
 import AddColumn from "../../components/columns/addColumn/addColumn";
 import { getColumns } from "../../selectors/columns";
 import { Header, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 
 class Layout extends Component {
   state = {
@@ -33,25 +32,27 @@ class Layout extends Component {
           }
         />
         <View style={styles.list}>
-          {this.props.columns.map(column => {
-            return (
-              <ListItem
-                key={column.id}
-                title={column.name}
-                onPress={() => {
-                  this.props.navigation.navigate("Column", {
-                    colId: column.id,
-                    name: column.name
-                  });
-                }}
-                containerStyle={{
-                  borderWidth: 1,
-                  marginBottom: 10,
-                  borderRadius: 10
-                }}
-              />
-            );
-          })}
+          <ScrollView>
+            {this.props.columns.map(column => {
+              return (
+                <ListItem
+                  key={column.id}
+                  title={column.name}
+                  onPress={() => {
+                    this.props.navigation.navigate("Column", {
+                      id: column.id,
+                      name: column.name
+                    });
+                  }}
+                  containerStyle={{
+                    borderWidth: 1,
+                    marginBottom: 10,
+                    borderRadius: 10
+                  }}
+                />
+              );
+            })}
+          </ScrollView>
         </View>
         <AddColumn
           visible={this.state.modalVisible}
