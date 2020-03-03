@@ -1,11 +1,17 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import columnsList from "../../reducers/columnsList";
+import AddColumn from "../../components/columns/addColumn/addColumn";
 import { getColumns } from "../../selectors/columns";
 import { Header, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 class Layout extends Component {
+  state = {
+    modalVisible: false
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -13,15 +19,18 @@ class Layout extends Component {
           containerStyle={{
             backgroundColor: "#fff"
           }}
-          style={styles.header}
           centerComponent={{
             text: "My Desc",
             style: { fontSize: 22 }
           }}
-          rightComponent={{
-            text: "+",
-            style: { fontSize: 42 }
-          }}
+          rightComponent={
+            <Text
+              style={{ fontSize: 26 }}
+              onPress={() => this.setState({ modalVisible: true })}
+            >
+              +
+            </Text>
+          }
         />
         <View style={styles.list}>
           {this.props.columns.map(column => {
@@ -29,6 +38,12 @@ class Layout extends Component {
               <ListItem
                 key={column.id}
                 title={column.name}
+                onPress={() => {
+                  this.props.navigation.navigate("Column", {
+                    colId: column.id,
+                    name: column.name
+                  });
+                }}
                 containerStyle={{
                   borderWidth: 1,
                   marginBottom: 10,
@@ -38,6 +53,10 @@ class Layout extends Component {
             );
           })}
         </View>
+        <AddColumn
+          visible={this.state.modalVisible}
+          modalHide={() => this.setState({ modalVisible: false })}
+        />
       </View>
     );
   }
