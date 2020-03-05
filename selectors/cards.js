@@ -19,3 +19,9 @@ export const getColumnCards = createSelector(
     });
   }
 );
+
+export const getCard = createSelector(
+  getCards,
+  (_, id) => id,
+  (cards, id) => cards.filter(card => card.id === id)
+);

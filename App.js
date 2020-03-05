@@ -10,6 +10,7 @@ import { store } from "./store/configureStore";
 import Layout from "./containers/layout/layout";
 import Login from "./components/login/login";
 import ColumnItem from "./components/columns/columnItem/columnItem";
+import Card from "./components/card/card";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -22,6 +23,7 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Layout" component={Layout} />
             <Stack.Screen name="Column" component={ColumnItem} />
+            <Stack.Screen name="Card" component={Card} />
           </Stack.Navigator>
           {/* <View style={styles.container}>
             <Layout />

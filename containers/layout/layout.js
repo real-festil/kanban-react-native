@@ -34,14 +34,15 @@ class Layout extends Component {
         <View style={styles.list}>
           <ScrollView>
             {this.props.columns.map(column => {
+              const { id, name } = column;
               return (
                 <ListItem
-                  key={column.id}
-                  title={column.name}
+                  key={id}
+                  title={name}
                   onPress={() => {
                     this.props.navigation.navigate("Column", {
-                      id: column.id,
-                      name: column.name
+                      id,
+                      name
                     });
                   }}
                   containerStyle={{

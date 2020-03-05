@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Modal, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Header, Input, Button, ListItem } from "react-native-elements";
 import Caption from "../../caption/caption";
 import { connect } from "react-redux";
@@ -17,7 +17,7 @@ class ColumnItem extends Component {
     const { dispatch, navigation, route } = this.props;
 
     dispatch(deleteCol({ id: route.params.id }));
-    navigation.navigate("Layout");
+    navigation.goBack();
   };
 
   render() {
@@ -58,15 +58,18 @@ class ColumnItem extends Component {
         </View>
         <View style={styles.list}>
           <ScrollView>
-            {this.props.cards.map(column => {
+            {this.props.cards.map(card => {
+              const { id, name, cardDesc } = card;
+
               return (
                 <ListItem
-                  key={column.id}
-                  title={column.name}
+                  key={id}
+                  title={name}
                   onPress={() => {
-                    this.props.navigation.navigate("Column", {
-                      id: column.id,
-                      name: column.name
+                    this.props.navigation.navigate("Card", {
+                      id,
+                      name,
+                      cardDesc
                     });
                   }}
                   containerStyle={{
@@ -93,6 +96,9 @@ const styles = StyleSheet.create({
     padding: 5,
     borderColor: "gray",
     borderRadius: 10
+  },
+  list: {
+    padding: 20
   }
 });
 
