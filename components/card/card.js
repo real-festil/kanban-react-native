@@ -21,6 +21,7 @@ import { getCard } from "../../selectors/cards";
 import Description from "../description/description";
 import { SwipeListView } from "react-native-swipe-list-view";
 import ChangeCommentForm from "../comments/changeCommentForm/changeCommentForm";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 class Card extends Component {
   state = {
@@ -30,16 +31,27 @@ class Card extends Component {
     currentCommentId: ""
   };
 
+  onAddComment = () => {
+    if (this.state.commentText.trim()) {
+      this.props.dispatch(
+        addComment({
+          id: uuid.v1(),
+          cardId: this.props.card[0].id,
+          value: this.state.commentText
+        })
+      );
+      this.setState({ commentText: "" });
+    }
+  };
+
   render() {
     const { id, name, cardDesc } = this.props.card[0];
     const { dispatch, comments } = this.props;
 
     return (
-      <View>
+      <View style={styles.Body}>
         <Header
-          containerStyle={{
-            backgroundColor: "#fff"
-          }}
+          containerStyle={styles.Header}
           centerComponent={
             <Caption
               value={name}
@@ -54,56 +66,67 @@ class Card extends Component {
           }
         />
         <Divider />
-        <Text>Comments:</Text>
-        <Divider />
-        <View style={styles.list}>
+        <Text style={styles.CommentsHeader}>Comments:</Text>
+        <ScrollView>
           <SwipeListView
             data={comments}
             renderItem={(data, rowMap) => (
-              <ListItem key={id} title={data.item.value} />
+              <ListItem
+                key={id}
+                title={data.item.value}
+                containerStyle={styles.Comment}
+              />
             )}
-            renderHiddenItem={(data, rowMap) => (
-              <View style={styles.RowBack}>
-                <Button
-                  title="Change"
-                  onPress={() =>
-                    this.setState({
-                      currentCommentText: data.item.value,
-                      currentCommentId: data.item.id,
-                      modalVisible: true
-                    })
-                  }
-                />
-                <Button
-                  title="Delete"
-                  onPress={() => dispatch(deleteComment({ id: data.item.id }))}
-                />
-              </View>
-            )}
-            rightOpenValue={-125}
+            renderHiddenItem={(data, rowMap) => {
+              const { value, id } = data.item;
+
+              return (
+                <View style={styles.RowBack}>
+                  <Button
+                    title="Change"
+                    onPress={() =>
+                      this.setState({
+                        currentCommentText: value,
+                        currentCommentId: id,
+                        modalVisible: true
+                      })
+                    }
+                    buttonStyle={styles.ChangeButton}
+                  />
+                  <Button
+                    title="Delete"
+                    onPress={() => dispatch(deleteComment({ id }))}
+                    buttonStyle={styles.DeleteButton}
+                  />
+                </View>
+              );
+            }}
+            rightOpenValue={-140}
+            stopRightSwipe={-140}
+            disableRightSwipe
           />
-          <View style={styles.AddPrayer}>
-            <Button
-              title="+"
-              onPress={() =>
-                dispatch(
-                  addComment({
-                    id: uuid.v1(),
-                    cardId: id,
-                    value: this.state.commentText
-                  })
-                )
-              }
-            />
-            <Input
-              containerStyle={{
-                flex: 1
-              }}
-              onChangeText={text => this.setState({ commentText: text })}
-              value={this.state.commentText}
-              placeholder="add a comment"
-            />
-          </View>
+        </ScrollView>
+
+        <View style={styles.AddCommentWrapper}>
+          <KeyboardAwareScrollView enableOnAndroid>
+            <View style={styles.AddComment}>
+              <Button
+                title="+"
+                titleStyle={styles.ButtonTitle}
+                buttonStyle={styles.AddButton}
+                onPress={this.onAddComment}
+              />
+              <Input
+                containerStyle={{
+                  flex: 1
+                }}
+                inputContainerStyle={styles.InputContainer}
+                onChangeText={text => this.setState({ commentText: text })}
+                value={this.state.commentText}
+                placeholder="Add a comment"
+              />
+            </View>
+          </KeyboardAwareScrollView>
         </View>
         {this.state.modalVisible && (
           <ChangeCommentForm
@@ -120,21 +143,65 @@ class Card extends Component {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    padding: 0
+  Body: {
+    flex: 1,
+    backgroundColor: "#fff"
   },
-  AddPrayer: {
+  AddCommentWrapper: {
+    justifyContent: "flex-end",
+    flex: 1,
     display: "flex",
     flexDirection: "row",
+    backgroundColor: "#fff",
+    position: "absolute",
+    bottom: 0,
     borderWidth: 1,
-    margin: 10,
-    padding: 5,
+    margin: 0,
     borderColor: "gray",
     borderRadius: 0
   },
+  AddComment: {
+    display: "flex",
+    flexDirection: "row",
+    flex: 1
+  },
+  Header: {
+    backgroundColor: "#bfb393",
+    color: "white"
+  },
   RowBack: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end"
+  },
+  CommentsHeader: {
+    textAlign: "center",
+    fontSize: 20,
+    margin: 10
+  },
+  Comment: {
+    borderBottomWidth: 1
+  },
+  ButtonTitle: {
+    color: "#72a8bc",
+    fontSize: 20
+  },
+  AddButton: {
+    backgroundColor: "#fff"
+  },
+  InputContainer: {
+    borderBottomWidth: 0
+  },
+  DeleteButton: {
+    flex: 1,
+    backgroundColor: "#ac5253",
+    width: 70,
+    borderRadius: 0
+  },
+  ChangeButton: {
+    flex: 1,
+    width: 70,
+    borderRadius: 0
   }
 });
 

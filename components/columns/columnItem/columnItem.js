@@ -4,9 +4,10 @@ import { Header, Input, Button, ListItem, Badge } from "react-native-elements";
 import Caption from "../../caption/caption";
 import { connect } from "react-redux";
 import { editColName, deleteCol } from "../../../reducers/columnsList";
-import { addCard } from "../../../reducers/cards";
+import { addCard, deleteCard } from "../../../reducers/cards";
 import uuid from "react-native-uuid";
 import { getColumnCards } from "../../../selectors/cards";
+import { SwipeListView } from "react-native-swipe-list-view";
 
 class ColumnItem extends Component {
   state = {
@@ -20,12 +21,27 @@ class ColumnItem extends Component {
     navigation.goBack();
   };
 
+  onColAdd = () => {
+    const { dispatch, route } = this.props;
+
+    if (this.state.cardName.trim()) {
+      dispatch(
+        addCard({
+          id: uuid.v1(),
+          colId: route.params.id,
+          name: this.state.cardName
+        })
+      );
+      this.setState({ cardName: "" });
+    }
+  };
+
   render() {
     const { id, name } = this.props.route.params;
     const { dispatch, cards, navigation } = this.props;
 
     return (
-      <View>
+      <View style={styles.Body}>
         <Header
           containerStyle={{
             backgroundColor: "#fff"
@@ -41,36 +57,44 @@ class ColumnItem extends Component {
         <View style={styles.AddPrayer}>
           <Button
             title="+"
-            onPress={() =>
-              dispatch(
-                addCard({ id: uuid.v1(), colId: id, name: this.state.cardName })
-              )
-            }
+            buttonStyle={styles.Button}
+            titleStyle={styles.ButtonTitle}
+            onPress={this.onColAdd}
           />
           <Input
             containerStyle={{
               flex: 1
             }}
+            inputContainerStyle={{
+              borderBottomWidth: 0
+            }}
             onChangeText={text => this.setState({ cardName: text })}
             value={this.state.cardName}
-            placeholder="add a prayer"
+            placeholder="Add a prayer"
           />
         </View>
-        <View style={styles.list}>
+        <View style={styles.List}>
           <ScrollView>
-            {cards.map(card => {
-              const { id, name, cardDesc, commentsLength } = card;
+            <SwipeListView
+              data={cards}
+              renderItem={(data, rowMap) => {
+                const { id, name, cardDesc, commentsLength } = data.item;
 
-              return (
-                <>
+                return (
                   <ListItem
                     key={id}
                     title={
-                      <>
-                        <Text>name</Text>
-                        <Badge value={commentsLength} status="primary" />
-                      </>
+                      <View style={styles.CardItemWrapper}>
+                        <Text key={uuid.v1()}>{name}</Text>
+                        <Badge
+                          key={uuid.v1()}
+                          value={commentsLength}
+                          containerStyle={styles.Badge}
+                          status="primary"
+                        />
+                      </View>
                     }
+                    containerStyle={styles.Card}
                     onPress={() => {
                       navigation.navigate("Card", {
                         id,
@@ -78,15 +102,21 @@ class ColumnItem extends Component {
                         cardDesc
                       });
                     }}
-                    containerStyle={{
-                      borderWidth: 1,
-                      marginBottom: 10,
-                      borderRadius: 10
-                    }}
                   />
-                </>
-              );
-            })}
+                );
+              }}
+              renderHiddenItem={(data, rowMap) => (
+                <Button
+                  title="Delete"
+                  onPress={() => dispatch(deleteCard({ id: data.item.id }))}
+                  buttonStyle={styles.ButtonDelete}
+                  containerStyle={styles.ButtonDeleteContainer}
+                />
+              )}
+              rightOpenValue={-70}
+              stopRightSwipe={-70}
+              disableRightSwipe
+            />
           </ScrollView>
         </View>
       </View>
@@ -95,17 +125,45 @@ class ColumnItem extends Component {
 }
 
 const styles = StyleSheet.create({
+  Body: {
+    backgroundColor: "#fff",
+    flex: 1
+  },
   AddPrayer: {
     display: "flex",
     flexDirection: "row",
     borderWidth: 1,
     margin: 10,
     padding: 5,
-    borderColor: "gray",
+    borderColor: "#c6c9cc",
     borderRadius: 10
   },
-  list: {
-    padding: 20
+  Button: {
+    backgroundColor: "transparent",
+    color: "blue"
+  },
+  ButtonTitle: {
+    color: "#72a8bc",
+    fontSize: 20
+  },
+  ButtonDelete: {
+    backgroundColor: "#ac5253",
+    width: 70,
+    flex: 1,
+    borderRadius: 0
+  },
+  ButtonDeleteContainer: {
+    flex: 1,
+    alignItems: "flex-end"
+  },
+  Card: {
+    borderBottomWidth: 1,
+    borderColor: "#c6c9cc",
+    height: 70
+  },
+  CardItemWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between"
   }
 });
 

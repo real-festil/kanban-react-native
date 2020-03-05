@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
   TextInput: {
     borderWidth: 1,
     padding: 5,
-    height: 200
+    maxHeight: 100,
+    alignItems: "flex-start"
   },
   Buttons: {
     flexDirection: "row",
