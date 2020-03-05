@@ -5,7 +5,8 @@ import {
   Input,
   Button,
   ListItem,
-  Divider
+  Divider,
+  Avatar
 } from "react-native-elements";
 import Caption from "../caption/caption";
 import { connect } from "react-redux";
@@ -55,6 +56,7 @@ class Card extends Component {
           centerComponent={
             <Caption
               value={name}
+              color="white"
               editName={name => dispatch(editCard({ id, fields: { name } }))}
             />
           }
@@ -67,13 +69,25 @@ class Card extends Component {
         />
         <Divider />
         <Text style={styles.CommentsHeader}>Comments:</Text>
-        <ScrollView>
+        <ScrollView style={styles.List}>
           <SwipeListView
             data={comments}
             renderItem={(data, rowMap) => (
               <ListItem
                 key={id}
-                title={data.item.value}
+                title={
+                  <View style={styles.CommentContent}>
+                    <Avatar
+                      rounded
+                      title="UN"
+                      containerStyle={styles.CommentAvatar}
+                    />
+                    <View>
+                      <Text style={styles.CommentName}>UserName</Text>
+                      <Text>{data.item.value}</Text>
+                    </View>
+                  </View>
+                }
                 containerStyle={styles.Comment}
               />
             )}
@@ -147,6 +161,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
+  List: {
+    marginBottom: 44
+  },
   AddCommentWrapper: {
     justifyContent: "flex-end",
     flex: 1,
@@ -202,6 +219,16 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 70,
     borderRadius: 0
+  },
+  CommentContent: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  CommentAvatar: {
+    marginRight: 10
+  },
+  CommentName: {
+    fontWeight: "bold"
   }
 });
 

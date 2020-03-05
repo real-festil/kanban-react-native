@@ -30,7 +30,7 @@ class Caption extends Component {
           />
         ) : (
           <Text
-            style={styles.text}
+            style={{ fontSize: 24, color: this.props.color }}
             onPress={() => this.setState({ isInput: true })}
           >
             {name}
