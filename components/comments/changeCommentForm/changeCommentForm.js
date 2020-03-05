@@ -1,25 +1,28 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet } from "react-native";
 import { Button, Header, Input } from "react-native-elements";
-import { addCol } from "../../../reducers/columnsList";
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 
-class AddColumn extends Component {
+class changeCommentForm extends Component {
   state = {
-    columnName: ""
+    id: this.props.id,
+    commentText: this.props.commentText
   };
 
-  onColAdd = () => {
-    const { dispatch, modalHide } = this.props;
+  onCommentChange = () => {
+    const { id, commentText } = this.state;
+    const { commentChange, modalHide } = this.props;
 
-    dispatch(addCol({ name: this.state.columnName, id: uuid.v1() }));
-    modalHide();
+    if (commentText.trim()) {
+      commentChange(id, commentText);
+      modalHide();
+    }
   };
 
   render() {
-    const { visible, modalHide } = this.props;
-    const { columnName } = this.state;
+    const { visible, modalHide, commentChange } = this.props;
+    const { commentText } = this.state;
 
     return (
       <Modal
@@ -33,20 +36,20 @@ class AddColumn extends Component {
             backgroundColor: "#fff"
           }}
           centerComponent={{
-            text: "Add column",
+            text: "Change comment",
             style: { fontSize: 22 }
           }}
         />
         <Input
           autoFocus
-          onChangeText={text => this.setState({ columnName: text })}
-          placeholder="Column name"
+          multiline
+          onChangeText={text => this.setState({ commentText: text })}
           errorStyle={{ color: "red" }}
-          value={columnName}
-          errorMessage={columnName ? "" : "Enter column name"}
+          value={commentText}
+          errorMessage={commentText.trim() ? "" : "Enter comment"}
         />
         <View style={styles.Buttons}>
-          <Button title="Add column" onPress={this.onColAdd} />
+          <Button title="Change comment" onPress={this.onCommentChange} />
           <Button title="Cancel" type="outline" onPress={() => modalHide()} />
         </View>
       </Modal>
@@ -63,4 +66,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect()(AddColumn);
+export default changeCommentForm;

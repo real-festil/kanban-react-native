@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Header, Input, Button, ListItem } from "react-native-elements";
+import { Header, Input, Button, ListItem, Badge } from "react-native-elements";
 import Caption from "../../caption/caption";
 import { connect } from "react-redux";
 import { editColName, deleteCol } from "../../../reducers/columnsList";
@@ -22,7 +22,7 @@ class ColumnItem extends Component {
 
   render() {
     const { id, name } = this.props.route.params;
-    const { dispatch } = this.props;
+    const { dispatch, cards, navigation } = this.props;
 
     return (
       <View>
@@ -58,26 +58,33 @@ class ColumnItem extends Component {
         </View>
         <View style={styles.list}>
           <ScrollView>
-            {this.props.cards.map(card => {
-              const { id, name, cardDesc } = card;
+            {cards.map(card => {
+              const { id, name, cardDesc, commentsLength } = card;
 
               return (
-                <ListItem
-                  key={id}
-                  title={name}
-                  onPress={() => {
-                    this.props.navigation.navigate("Card", {
-                      id,
-                      name,
-                      cardDesc
-                    });
-                  }}
-                  containerStyle={{
-                    borderWidth: 1,
-                    marginBottom: 10,
-                    borderRadius: 10
-                  }}
-                />
+                <>
+                  <ListItem
+                    key={id}
+                    title={
+                      <>
+                        <Text>name</Text>
+                        <Badge value={commentsLength} status="primary" />
+                      </>
+                    }
+                    onPress={() => {
+                      navigation.navigate("Card", {
+                        id,
+                        name,
+                        cardDesc
+                      });
+                    }}
+                    containerStyle={{
+                      borderWidth: 1,
+                      marginBottom: 10,
+                      borderRadius: 10
+                    }}
+                  />
+                </>
               );
             })}
           </ScrollView>

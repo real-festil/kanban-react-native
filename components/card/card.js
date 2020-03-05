@@ -10,23 +10,24 @@ import {
 import Caption from "../caption/caption";
 import { connect } from "react-redux";
 import { editCard, deleteCard } from "../../reducers/cards";
-import { addComment, deleteComment } from "../../reducers/comments";
+import {
+  addComment,
+  deleteComment,
+  editComment
+} from "../../reducers/comments";
 import uuid from "react-native-uuid";
 import { getCardComments } from "../../selectors/comments";
 import { getCard } from "../../selectors/cards";
 import Description from "../description/description";
 import { SwipeListView } from "react-native-swipe-list-view";
+import ChangeCommentForm from "../comments/changeCommentForm/changeCommentForm";
 
 class Card extends Component {
   state = {
-    commentText: ""
-  };
-
-  onCardDelete = () => {
-    const { dispatch, navigation, route } = this.props;
-
-    dispatch(deleteCard({ id }));
-    navigation.goBack();
+    commentText: "",
+    modalVisible: false,
+    currentCommentText: "",
+    currentCommentId: ""
   };
 
   render() {
@@ -45,7 +46,6 @@ class Card extends Component {
               editName={name => dispatch(editCard({ id, fields: { name } }))}
             />
           }
-          rightComponent={<Text onPress={this.onCardDelete}>DELETE</Text>}
         />
         <Description
           cardDesc={cardDesc}
@@ -53,6 +53,8 @@ class Card extends Component {
             dispatch(editCard({ id, fields: { cardDesc } }))
           }
         />
+        <Divider />
+        <Text>Comments:</Text>
         <Divider />
         <View style={styles.list}>
           <SwipeListView
@@ -62,7 +64,16 @@ class Card extends Component {
             )}
             renderHiddenItem={(data, rowMap) => (
               <View style={styles.RowBack}>
-                <Button title="Change" onPress={() => console.log("change")} />
+                <Button
+                  title="Change"
+                  onPress={() =>
+                    this.setState({
+                      currentCommentText: data.item.value,
+                      currentCommentId: data.item.id,
+                      modalVisible: true
+                    })
+                  }
+                />
                 <Button
                   title="Delete"
                   onPress={() => dispatch(deleteComment({ id: data.item.id }))}
@@ -90,10 +101,19 @@ class Card extends Component {
               }}
               onChangeText={text => this.setState({ commentText: text })}
               value={this.state.commentText}
-              placeholder="add a prayer"
+              placeholder="add a comment"
             />
           </View>
         </View>
+        {this.state.modalVisible && (
+          <ChangeCommentForm
+            visible={this.state.modalVisible}
+            modalHide={() => this.setState({ modalVisible: false })}
+            commentText={this.state.currentCommentText}
+            id={this.state.currentCommentId}
+            commentChange={(id, value) => dispatch(editComment({ id, value }))}
+          />
+        )}
       </View>
     );
   }
