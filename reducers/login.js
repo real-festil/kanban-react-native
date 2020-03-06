@@ -1,17 +1,19 @@
 import { handleActions, createAction } from "redux-actions";
+import * as loginActions from "../actions/login";
 
-const initialState = [];
-
-export const login = createAction("LOGIN");
-export const register = createAction("REGISTER");
+const initialState = { username: "", token: "" };
 
 export default handleActions(
   {
-    [login](state, action) {
-      return action.payload.text;
+    [loginActions.loginSuccess](state, action) {
+      const { email, token } = action.payload;
+
+      return { ...state, username: email, token };
     },
-    [register](state, action) {
-      const { name, email, password } = action.payload;
+    [loginActions.registerSuccess](state, action) {
+      const { email, token } = action.payload;
+
+      return { ...state, username: email, token };
     }
   },
   initialState

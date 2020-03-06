@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet } from "react-native";
 import { Button, Header, Input } from "react-native-elements";
-import { addCol } from "../../../reducers/columnsList";
+import { addColumn } from "../../../actions/columnsList";
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 
@@ -11,9 +11,9 @@ class AddColumn extends Component {
   };
 
   onColAdd = () => {
-    const { dispatch, modalHide } = this.props;
+    const { dispatch, modalHide, token } = this.props;
 
-    dispatch(addCol({ name: this.state.columnName, id: uuid.v1() }));
+    dispatch(addColumn({ token, title: this.state.columnName }));
     modalHide();
   };
 
@@ -63,4 +63,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect()(AddColumn);
+const mapStateToProps = state => {
+  return { token: state.login.token };
+};
+
+export default connect(mapStateToProps)(AddColumn);
