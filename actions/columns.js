@@ -1,6 +1,5 @@
 import { createAction } from "redux-actions";
 import API from "../utils/API";
-import * as RootNavigation from "../utils/RootNavigation";
 
 export const getColumnsRequest = createAction("GET_COLUMNS_REQUEST");
 export const getColumnsSuccess = createAction("GET_COLUMNS_SUCCESS");
@@ -50,5 +49,37 @@ export const addColumn = ({ token, title }) => async dispatch => {
     dispatch(addColumnSuccess(res.data));
   } catch (e) {
     dispatch(addColumnFailure());
+  }
+};
+
+export const deleteColumn = ({ token, id }) => async dispatch => {
+  dispatch(deleteColumnRequest());
+  try {
+    const res = await API.delete(`/columns/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    dispatch(deleteColumnSuccess({ id }));
+  } catch (e) {
+    dispatch(deleteColumnFailure());
+  }
+};
+
+export const updateColumn = ({ token, id, title }) => async dispatch => {
+  dispatch(updateColumnRequest());
+  try {
+    const res = await API.put(
+      `/columns/${id}`,
+      { title },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    dispatch(updateColumnSuccess(res.data));
+  } catch (e) {
+    dispatch(updateColumnFailure());
   }
 };

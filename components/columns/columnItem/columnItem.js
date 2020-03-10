@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Header, Input, Button, ListItem, Badge } from "react-native-elements";
 import Caption from "../../caption/caption";
 import { connect } from "react-redux";
-import { editColName, deleteCol } from "../../../reducers/columnsList";
+import { deleteColumn, updateColumn } from "../../../actions/columns";
 import { addCard, deleteCard } from "../../../reducers/cards";
 import uuid from "react-native-uuid";
 import { getColumnCards } from "../../../selectors/cards";
@@ -15,9 +15,9 @@ class ColumnItem extends Component {
   };
 
   onColDelete = () => {
-    const { dispatch, navigation, route } = this.props;
+    const { dispatch, navigation, route, token } = this.props;
 
-    dispatch(deleteCol({ id: route.params.id }));
+    dispatch(deleteColumn({ token, id: route.params.id }));
     navigation.goBack();
   };
 
@@ -38,8 +38,7 @@ class ColumnItem extends Component {
 
   render() {
     const { id, name } = this.props.route.params;
-    const { dispatch, cards, navigation } = this.props;
-
+    const { dispatch, cards, navigation, token } = this.props;
     return (
       <View style={styles.Body}>
         <Header
@@ -49,7 +48,9 @@ class ColumnItem extends Component {
           centerComponent={
             <Caption
               value={name}
-              editName={name => dispatch(editColName({ id, name }))}
+              editName={name =>
+                dispatch(updateColumn({ token, id, title: name }))
+              }
             />
           }
           rightComponent={<Text onPress={this.onColDelete}>DELETE</Text>}
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, props) => {
   return {
-    cards: getColumnCards(state, props.route.params.id)
+    token: state.login.token
   };
 };
 

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import columnsList from "../../reducers/columnsList";
 import AddColumn from "../../components/columns/addColumn/addColumn";
-import { getColumns } from "../../actions/columnsList";
+import Spinner from "../../components/spinner/spinner";
+import { getColumns } from "../../actions/columns";
 import { Header, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 
@@ -16,6 +16,8 @@ class Layout extends Component {
   }
 
   render() {
+    const { getColumnsState, columns, navigation } = this.props;
+
     return (
       <View style={styles.container}>
         <Header
@@ -36,28 +38,34 @@ class Layout extends Component {
           }
         />
         <View style={styles.list}>
-          <ScrollView>
-            {this.props.columns.map(column => {
-              const { id, title } = column;
-              return (
-                <ListItem
-                  key={id}
-                  title={title}
-                  onPress={() => {
-                    this.props.navigation.navigate("Column", {
-                      id,
-                      name: title
-                    });
-                  }}
-                  containerStyle={{
-                    borderWidth: 1,
-                    marginBottom: 10,
-                    borderRadius: 10
-                  }}
-                />
-              );
-            })}
-          </ScrollView>
+          {getColumnsState === "requested" ? (
+            <Spinner />
+          ) : getColumnsState === "failed" ? (
+            <Text>Something went wrong</Text>
+          ) : (
+            <ScrollView>
+              {columns.map(column => {
+                const { id, title } = column;
+                return (
+                  <ListItem
+                    key={id}
+                    title={title}
+                    onPress={() => {
+                      navigation.navigate("Column", {
+                        id,
+                        name: title
+                      });
+                    }}
+                    containerStyle={{
+                      borderWidth: 1,
+                      marginBottom: 10,
+                      borderRadius: 10
+                    }}
+                  />
+                );
+              })}
+            </ScrollView>
+          )}
         </View>
         <AddColumn
           visible={this.state.modalVisible}
@@ -81,7 +89,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     token: state.login.token,
-    columns: state.columnsList
+    columns: state.columns.columnsList,
+    getColumnsState: state.columns.getColumnsState
   };
 };
 

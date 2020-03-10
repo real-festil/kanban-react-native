@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet } from "react-native";
 import { Button, Header, Input } from "react-native-elements";
-import { addColumn } from "../../../actions/columnsList";
+import { addColumn } from "../../../actions/columns";
 import { connect } from "react-redux";
 import uuid from "react-native-uuid";
 

@@ -1,12 +1,12 @@
 import cards from "./cards";
-import columnsList from "./columnsList";
+import columns from "./columns";
 import comments from "./comments";
 import login from "./login";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
   cards,
-  columnsList,
+  columns,
   comments,
   login
 });
