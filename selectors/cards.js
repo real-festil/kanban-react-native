@@ -1,14 +1,14 @@
 import { createSelector } from "reselect";
 import { getComments } from "./comments";
 
-const getCards = state => state.cards;
+const getCards = state => state.cards.cardsList;
 
 export const getColumnCards = createSelector(
   getCards,
   getComments,
-  (_, colId) => colId,
-  (cards, comments, colId) => {
-    const columnCards = cards.filter(card => card.colId === colId);
+  (_, columnId) => columnId,
+  (cards, comments, columnId) => {
+    const columnCards = cards.filter(card => card.columnId === columnId);
     return columnCards.map(card => {
       const cardComments = comments.filter(
         comment => comment.cardId === card.id

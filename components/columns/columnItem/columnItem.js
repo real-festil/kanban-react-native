@@ -4,15 +4,22 @@ import { Header, Input, Button, ListItem, Badge } from "react-native-elements";
 import Caption from "../../caption/caption";
 import { connect } from "react-redux";
 import { deleteColumn, updateColumn } from "../../../actions/columns";
-import { addCard, deleteCard } from "../../../reducers/cards";
+import { addCard, getCards, deleteCard } from "../../../actions/cards";
 import uuid from "react-native-uuid";
 import { getColumnCards } from "../../../selectors/cards";
 import { SwipeListView } from "react-native-swipe-list-view";
+import Spinner from "../../spinner/spinner";
 
 class ColumnItem extends Component {
   state = {
     cardName: ""
   };
+
+  componentDidMount() {
+    const { dispatch, token } = this.props;
+
+    dispatch(getCards({ token }));
+  }
 
   onColDelete = () => {
     const { dispatch, navigation, route, token } = this.props;
@@ -21,15 +28,16 @@ class ColumnItem extends Component {
     navigation.goBack();
   };
 
-  onColAdd = () => {
-    const { dispatch, route } = this.props;
+  onCardAdd = () => {
+    const { dispatch, route, token } = this.props;
 
     if (this.state.cardName.trim()) {
       dispatch(
         addCard({
-          id: uuid.v1(),
-          colId: route.params.id,
-          name: this.state.cardName
+          token,
+          title: this.state.cardName,
+          description: "Введите описание",
+          column: route.params.id
         })
       );
       this.setState({ cardName: "" });
@@ -38,7 +46,8 @@ class ColumnItem extends Component {
 
   render() {
     const { id, name } = this.props.route.params;
-    const { dispatch, cards, navigation, token } = this.props;
+    const { dispatch, cards, navigation, token, getCardsState } = this.props;
+
     return (
       <View style={styles.Body}>
         <Header
@@ -60,7 +69,7 @@ class ColumnItem extends Component {
             title="+"
             buttonStyle={styles.Button}
             titleStyle={styles.ButtonTitle}
-            onPress={this.onColAdd}
+            onPress={this.onCardAdd}
           />
           <Input
             containerStyle={{
@@ -75,50 +84,58 @@ class ColumnItem extends Component {
           />
         </View>
         <View style={styles.List}>
-          <ScrollView>
-            <SwipeListView
-              data={cards}
-              renderItem={(data, rowMap) => {
-                const { id, name, cardDesc, commentsLength } = data.item;
+          {getCardsState === "requested" ? (
+            <Spinner />
+          ) : getCardsState === "failed" ? (
+            <Text>Something Went Wrong</Text>
+          ) : (
+            <ScrollView>
+              <SwipeListView
+                data={cards}
+                renderItem={(data, rowMap) => {
+                  const { id, title, description, commentsLength } = data.item;
 
-                return (
-                  <ListItem
-                    key={id}
-                    title={
-                      <View style={styles.CardItemWrapper}>
-                        <Text key={uuid.v1()}>{name}</Text>
-                        <Badge
-                          key={uuid.v1()}
-                          value={commentsLength}
-                          containerStyle={styles.Badge}
-                          status="primary"
-                        />
-                      </View>
+                  return (
+                    <ListItem
+                      key={id}
+                      title={
+                        <View style={styles.CardItemWrapper}>
+                          <Text key={uuid.v1()}>{title}</Text>
+                          <Badge
+                            key={uuid.v1()}
+                            value="0"
+                            containerStyle={styles.Badge}
+                            status="primary"
+                          />
+                        </View>
+                      }
+                      containerStyle={styles.Card}
+                      onPress={() => {
+                        navigation.navigate("Card", {
+                          id,
+                          title,
+                          description
+                        });
+                      }}
+                    />
+                  );
+                }}
+                renderHiddenItem={(data, rowMap) => (
+                  <Button
+                    title="Delete"
+                    onPress={() =>
+                      dispatch(deleteCard({ token, id: data.item.id }))
                     }
-                    containerStyle={styles.Card}
-                    onPress={() => {
-                      navigation.navigate("Card", {
-                        id,
-                        name,
-                        cardDesc
-                      });
-                    }}
+                    buttonStyle={styles.ButtonDelete}
+                    containerStyle={styles.ButtonDeleteContainer}
                   />
-                );
-              }}
-              renderHiddenItem={(data, rowMap) => (
-                <Button
-                  title="Delete"
-                  onPress={() => dispatch(deleteCard({ id: data.item.id }))}
-                  buttonStyle={styles.ButtonDelete}
-                  containerStyle={styles.ButtonDeleteContainer}
-                />
-              )}
-              rightOpenValue={-70}
-              stopRightSwipe={-70}
-              disableRightSwipe
-            />
-          </ScrollView>
+                )}
+                rightOpenValue={-70}
+                stopRightSwipe={-70}
+                disableRightSwipe
+              />
+            </ScrollView>
+          )}
         </View>
       </View>
     );
@@ -170,7 +187,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, props) => {
   return {
-    token: state.login.token
+    token: state.login.token,
+    cards: getColumnCards(state, props.route.params.id),
+    getCardsState: state.cards.getCardsState
   };
 };
 

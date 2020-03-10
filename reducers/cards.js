@@ -1,37 +1,93 @@
-import { handleActions, createAction } from "redux-actions";
+import { handleActions } from "redux-actions";
+import * as cardActions from "../actions/cards";
+import { combineReducers } from "redux";
 
-const initialState = [];
-
-export const addCard = createAction("ADD_CARD");
-export const deleteCard = createAction("DELETE_CARD");
-export const editCard = createAction("EDIT_CARD");
-
-export default handleActions(
+const cardsList = handleActions(
   {
-    [addCard](state, action) {
-      const { id, colId, name } = action.payload;
-
-      return [
-        ...state,
-        {
-          id,
-          colId,
-          name,
-          comments: 0,
-          cardDesc: "Введите описание"
-        }
-      ];
+    [cardActions.getCardsSuccess](state, action) {
+      return action.payload;
     },
-    [deleteCard](state, action) {
+    [cardActions.addCardSuccess](state, action) {
+      return [...state, action.payload];
+    },
+    [cardActions.deleteCardSuccess](state, action) {
       return state.filter(card => card.id !== action.payload.id);
     },
-    [editCard](state, action) {
-      const { id, fields } = action.payload;
+    [cardActions.editCardSuccess](state, action) {
+      const { id, title, description } = action.payload;
 
       return state.map(card =>
-        card.id === id ? { ...card, ...fields } : card
+        card.id === id ? { ...card, title, description } : card
       );
     }
   },
-  initialState
+  []
 );
+
+const getCardsState = handleActions(
+  {
+    [cardActions.getCardRequest]() {
+      return "requested";
+    },
+    [cardActions.getCardsSuccess]() {
+      return "succeed";
+    },
+    [cardActions.getCardsFailure]() {
+      return "failure";
+    }
+  },
+  ""
+);
+
+const addCardsState = handleActions(
+  {
+    [cardActions.addCardRequest]() {
+      return "requested";
+    },
+    [cardActions.addCardsSuccess]() {
+      return "succeed";
+    },
+    [cardActions.addCardsFailure]() {
+      return "failure";
+    }
+  },
+  ""
+);
+
+const deleteCardsState = handleActions(
+  {
+    [cardActions.deleteCardRequest]() {
+      return "requested";
+    },
+    [cardActions.deleteCardsSuccess]() {
+      return "succeed";
+    },
+    [cardActions.deleteCardsFailure]() {
+      return "failure";
+    }
+  },
+  ""
+);
+
+const editCardsState = handleActions(
+  {
+    [cardActions.editCardRequest]() {
+      return "requested";
+    },
+    [cardActions.editCardsSuccess]() {
+      return "succeed";
+    },
+    [cardActions.editCardsFailure]() {
+      return "failure";
+    }
+  },
+  ""
+);
+
+export default combineReducers({
+  cardsList,
+  getCardsState,
+  addCardsState,
+  deleteCardsState,
+  editCardsState
+});

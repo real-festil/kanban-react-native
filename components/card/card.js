@@ -10,7 +10,8 @@ import {
 } from "react-native-elements";
 import Caption from "../caption/caption";
 import { connect } from "react-redux";
-import { editCard, deleteCard } from "../../reducers/cards";
+import { deleteCard } from "../../reducers/cards";
+import { editCard } from "../../actions/cards";
 import {
   addComment,
   deleteComment,
@@ -46,8 +47,8 @@ class Card extends Component {
   };
 
   render() {
-    const { id, name, cardDesc } = this.props.card[0];
-    const { dispatch, comments } = this.props;
+    const { id, title, description } = this.props.card[0];
+    const { dispatch, comments, token } = this.props;
 
     return (
       <View style={styles.Body}>
@@ -55,16 +56,18 @@ class Card extends Component {
           containerStyle={styles.Header}
           centerComponent={
             <Caption
-              value={name}
+              value={title}
               color="white"
-              editName={name => dispatch(editCard({ id, fields: { name } }))}
+              editName={title =>
+                dispatch(editCard({ token, id, fields: { title } }))
+              }
             />
           }
         />
         <Description
-          cardDesc={cardDesc}
-          descChange={cardDesc =>
-            dispatch(editCard({ id, fields: { cardDesc } }))
+          cardDesc={description}
+          descChange={description =>
+            dispatch(editCard({ token, id, fields: { description } }))
           }
         />
         <Divider />
@@ -183,8 +186,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   Header: {
-    backgroundColor: "#bfb393",
-    color: "white"
+    backgroundColor: "#bfb393"
   },
   RowBack: {
     flex: 1,
@@ -234,6 +236,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, props) => {
   return {
+    token: state.login.token,
     comments: getCardComments(state, props.route.params.id),
     card: getCard(state, props.route.params.id)
   };
