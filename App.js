@@ -8,9 +8,9 @@ import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { store } from "./store/configureStore";
 import Layout from "./containers/layout/layout";
-import Login from "./components/login/login";
+import Login from "./containers/login/login";
 import ColumnItem from "./components/columns/columnItem/columnItem";
-import Card from "./components/card/card";
+import Card from "./containers/card/card";
 import { navigationRef } from "./utils/RootNavigation";
 
 export default function App() {

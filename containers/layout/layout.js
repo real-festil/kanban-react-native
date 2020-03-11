@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import AddColumn from "../../components/columns/addColumn/addColumn";
+import AddColumn from "../../components/addColumn/addColumn";
 import Spinner from "../../components/spinner/spinner";
-import { getColumns } from "../../actions/columns";
+import { getColumns, addColumn } from "../../actions/columns";
 import { Header, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 
@@ -16,7 +16,13 @@ class Layout extends Component {
   }
 
   render() {
-    const { getColumnsState, columns, navigation } = this.props;
+    const {
+      getColumnsState,
+      columns,
+      navigation,
+      dispatch,
+      token
+    } = this.props;
 
     return (
       <View style={styles.container}>
@@ -70,6 +76,7 @@ class Layout extends Component {
         <AddColumn
           visible={this.state.modalVisible}
           modalHide={() => this.setState({ modalVisible: false })}
+          onColAdd={title => dispatch(addColumn({ token, title }))}
         />
       </View>
     );

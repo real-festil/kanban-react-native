@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { View, Modal, Text, StyleSheet } from "react-native";
 import { Button, Header, Input } from "react-native-elements";
-import { addColumn } from "../../../actions/columns";
-import { connect } from "react-redux";
-import uuid from "react-native-uuid";
 
 class AddColumn extends Component {
   state = {
@@ -11,10 +8,14 @@ class AddColumn extends Component {
   };
 
   onColAdd = () => {
-    const { dispatch, modalHide, token } = this.props;
+    const { dispatch, modalHide, onColAdd } = this.props;
+    const { columnName } = this.state;
 
-    dispatch(addColumn({ token, title: this.state.columnName }));
-    modalHide();
+    if (columnName.trim()) {
+      onColAdd(columnName);
+      modalHide();
+    }
+    // dispatch(addColumn({ token, title: this.state.columnName }));
   };
 
   render() {
@@ -63,8 +64,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  return { token: state.login.token };
-};
-
-export default connect(mapStateToProps)(AddColumn);
+export default AddColumn;

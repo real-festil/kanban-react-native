@@ -32,7 +32,9 @@ export const login = ({ email, password }) => async dispatch => {
       password
     });
     if (res.data.token) {
-      dispatch(loginSuccess({ email, token: res.data.token }));
+      const { token, email, name } = res.data;
+
+      dispatch(loginSuccess({ email, name, token }));
       RootNavigation.navigate("Layout");
     } else {
       dispatch(loginFailure());

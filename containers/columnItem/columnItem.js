@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Header, Input, Button, ListItem, Badge } from "react-native-elements";
-import Caption from "../../caption/caption";
+import Caption from "../../components/caption/caption";
 import { connect } from "react-redux";
-import { deleteColumn, updateColumn } from "../../../actions/columns";
-import { addCard, getCards, deleteCard } from "../../../actions/cards";
+import { deleteColumn, updateColumn } from "../../actions/columns";
+import { addCard, getCards, deleteCard } from "../../actions/cards";
 import uuid from "react-native-uuid";
-import { getColumnCards } from "../../../selectors/cards";
+import { getColumnCards } from "../../selectors/cards";
 import { SwipeListView } from "react-native-swipe-list-view";
-import Spinner from "../../spinner/spinner";
+import Spinner from "../../components/spinner/spinner";
 
 class ColumnItem extends Component {
   state = {
