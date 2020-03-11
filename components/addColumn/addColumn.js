@@ -15,7 +15,6 @@ class AddColumn extends Component {
       onColAdd(columnName);
       modalHide();
     }
-    // dispatch(addColumn({ token, title: this.state.columnName }));
   };
 
   render() {

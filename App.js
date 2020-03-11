@@ -9,8 +9,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store } from "./store/configureStore";
 import Layout from "./containers/layout/layout";
 import Login from "./containers/login/login";
-import ColumnItem from "./components/columns/columnItem/columnItem";
-import Card from "./containers/card/card";
+import ColumnItem from "./containers/columnItem/columnItem";
+import CardItem from "./containers/cardItem/cardItem";
 import { navigationRef } from "./utils/RootNavigation";
 
 export default function App() {
@@ -24,7 +24,7 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Layout" component={Layout} />
             <Stack.Screen name="Column" component={ColumnItem} />
-            <Stack.Screen name="Card" component={Card} />
+            <Stack.Screen name="Card" component={CardItem} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

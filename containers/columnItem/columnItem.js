@@ -91,19 +91,20 @@ class ColumnItem extends Component {
           ) : (
             <ScrollView>
               <SwipeListView
+                keyExtractor={() => uuid.v1()}
                 data={cards}
                 renderItem={(data, rowMap) => {
                   const { id, title, description, commentsLength } = data.item;
 
                   return (
                     <ListItem
-                      key={id}
+                      key={id.toString()}
                       title={
                         <View style={styles.CardItemWrapper}>
                           <Text key={uuid.v1()}>{title}</Text>
                           <Badge
                             key={uuid.v1()}
-                            value="0"
+                            value={commentsLength}
                             containerStyle={styles.Badge}
                             status="primary"
                           />
@@ -157,8 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   Button: {
-    backgroundColor: "transparent",
-    color: "blue"
+    backgroundColor: "transparent"
   },
   ButtonTitle: {
     color: "#72a8bc",

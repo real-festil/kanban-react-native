@@ -32,7 +32,7 @@ class CommentsList extends Component {
             data={comments}
             renderItem={(data, rowMap) => (
               <ListItem
-                key={data.item.id}
+                key={data.item.id.toString()}
                 title={
                   <View style={styles.CommentContent}>
                     <Avatar

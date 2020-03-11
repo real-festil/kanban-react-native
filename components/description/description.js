@@ -33,14 +33,10 @@ class Description extends Component {
               multiline
               defaultValue={cardDesc}
               style={styles.TextInput}
-              onChangeText={text =>
-                this.setState({
-                  cardDesc: text ? text : this.props.cardDesc
-                })
-              }
+              onChangeText={text => this.setState({ cardDesc: text })}
             ></TextInput>
             <View style={styles.Buttons}>
-              <Button title="Change desc" onPress={this.onDescChange} />
+              <Button title="Change description" onPress={this.onDescChange} />
               <Button
                 title="Cancel"
                 onPress={() =>
