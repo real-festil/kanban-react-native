@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, props) => {
   return {
     comments: getCardComments(state, props.cardId),
-    name: state.login.name
+    name: state.login.login.name
   };
 };
 

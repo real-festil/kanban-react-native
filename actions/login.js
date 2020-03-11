@@ -18,7 +18,8 @@ export const register = ({ email, name, password }) => async dispatch => {
       name,
       password
     });
-    dispatch(registerSuccess({ email }));
+    console.log(res);
+    dispatch(registerSuccess());
   } catch (e) {
     dispatch(registerFailure());
   }

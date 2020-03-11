@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, props) => {
   return {
-    token: state.login.token,
+    token: state.login.login.token,
     card: getCard(state, props.route.params.id)
   };
 };

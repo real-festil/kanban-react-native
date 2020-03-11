@@ -186,10 +186,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, props) => {
+  const { login, cards } = state;
+
   return {
-    token: state.login.token,
+    token: login.login.token,
     cards: getColumnCards(state, props.route.params.id),
-    getCardsState: state.cards.getCardsState
+    getCardsState: cards.getCardsState
   };
 };
 

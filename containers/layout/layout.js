@@ -94,10 +94,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+  const { login, columns } = state;
+
   return {
-    token: state.login.token,
-    columns: state.columns.columnsList,
-    getColumnsState: state.columns.getColumnsState
+    token: login.login.token,
+    columns: columns.columnsList,
+    getColumnsState: columns.getColumnsState
   };
 };
 

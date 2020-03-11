@@ -29,9 +29,7 @@ class AddColumn extends Component {
         visible={visible}
       >
         <Header
-          containerStyle={{
-            backgroundColor: "#fff"
-          }}
+          containerStyle={styles.Header}
           centerComponent={{
             text: "Add column",
             style: { fontSize: 22 }
@@ -41,7 +39,6 @@ class AddColumn extends Component {
           autoFocus
           onChangeText={text => this.setState({ columnName: text })}
           placeholder="Column name"
-          errorStyle={{ color: "red" }}
           value={columnName}
           errorMessage={columnName ? "" : "Enter column name"}
         />
@@ -55,6 +52,9 @@ class AddColumn extends Component {
 }
 
 const styles = StyleSheet.create({
+  Header: {
+    backgroundColor: "#fff"
+  },
   Buttons: {
     display: "flex",
     flexDirection: "row",
