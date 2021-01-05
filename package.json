@@ -13,7 +13,7 @@
     "@react-native-community/masked-view": "^0.1.7",
     "@react-navigation/native": "^5.0.8",
     "@react-navigation/stack": "^5.1.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "buffer": "^5.4.3",
     "expo": "~36.0.0",
     "prop-types": "^15.7.2",
